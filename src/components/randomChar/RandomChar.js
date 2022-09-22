@@ -7,12 +7,6 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 class RandomChar extends Component {
-  constructor(props) {
-    super(props);
-
-    this.updateChar();
-  }
-
   state = {
     char: {},
     loading: true,
@@ -20,6 +14,18 @@ class RandomChar extends Component {
   }
 
   marvelService = new MarvelService();
+
+  componentDidMount() {
+    this.updateChar();
+  }
+
+  // componentDidUpdate() {
+  //   console.log('update');
+  // }
+
+  // componentWillUnmount() {
+  //   console.log('unmount');
+  // }
 
   onCharLoaded = (char) => {
     this.setState({
@@ -35,8 +41,20 @@ class RandomChar extends Component {
     });
   }
 
+  onRefresh = () => {
+    this.setState({
+      loading: true,
+    });
+
+    this.updateChar();
+  }
+
   updateChar = () => {
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
+
+    this.setState({
+      error: false,
+    });
 
     this.marvelService
         .getCharacter(id)
@@ -46,8 +64,6 @@ class RandomChar extends Component {
 
   render() {
     const {char, loading, error} = this.state;
-
-    console.log(char);
 
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
@@ -67,7 +83,7 @@ class RandomChar extends Component {
                     Or choose another one
                 </p>
                 <button className="button button__main">
-                    <div className="inner">try it</div>
+                    <div className="inner" onClick={this.onRefresh}>try it</div>
                 </button>
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
             </div>
