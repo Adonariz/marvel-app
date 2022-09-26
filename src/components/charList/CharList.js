@@ -5,10 +5,14 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 
 class CharList extends Component {
-  state = {
-    charList: [],
-    loading: true,
-    error: false,
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      charList: [],
+      loading: true,
+      error: false,
+    }
   }
   
   marvelService = new MarvelService();
@@ -43,7 +47,11 @@ class CharList extends Component {
       let imgStyle = {objectFit: thumbnail === placeholderImgUrl ? 'unset' : 'cover'};
 
       return (
-        <li key={item.id} className="char__item">
+        <li 
+          key={item.id} 
+          className="char__item"
+          onClick={() => this.props.onCharSelect(item.id)}
+        >
           <img src={thumbnail} alt={name} style={imgStyle}/>
           <div className="char__name">{name}</div>
         </li>
