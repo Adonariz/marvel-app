@@ -12,21 +12,35 @@ class CharList extends Component {
       charList: [],
       loading: true,
       error: false,
+      newItemLoading: false,
+      offset: 210
     }
   }
   
   marvelService = new MarvelService();
 
   componentDidMount() {
-    this.marvelService.getAllCharacters()
-        .then(this.onCharListLoaded);
+    this.onRequest();
   }
 
-  onCharListLoaded = (charList) => {
+  onRequest = (offset) => {
+    this.onCharListLoading();
+    this.marvelService.getAllCharacters(offset)
+                      .then(this.onCharListLoaded);
+  }
+
+  onCharListLoading = () => {
     this.setState({
-      charList,
+      newItemLoading: true,
+    })
+  }
+
+  onCharListLoaded = (newCharList) => {
+    this.setState(({charList}) => ({
+      charList: [...charList, ...newCharList],
       loading: false,
-    });
+      newItemLoading: false,
+    }));
 
     console.log(this.state.charList);
   }
