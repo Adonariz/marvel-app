@@ -64,8 +64,20 @@ class CharList extends Component {
     });
   }
 
+  itemRefs = [];
+
+  setRef = (ref) => {
+    this.itemRefs.push(ref);
+  }
+
+  focusOnItem = (id) => {
+    this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+    this.itemRefs[id].classList.add('char__item_selected');
+    this.itemRefs[id].focus();
+  }
+
   renderItems = (arr) => {
-    const items = arr.map(item => {
+    const items = arr.map((item, i) => {
       const {name, thumbnail} = item;
 
       const placeholderImgUrl = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
@@ -74,9 +86,20 @@ class CharList extends Component {
 
       return (
         <li 
-          key={item.id} 
+          key={item.id}
+          tabIndex={0}
+          ref={this.setRef} 
           className="char__item"
-          onClick={() => this.props.onCharSelect(item.id)}
+          onClick={() => {
+            this.props.onCharSelect(item.id);
+            this.focusOnItem(i);
+          }}
+          onKeyDown={(evt) => {
+            if (evt.key === ' ' || evt.key === 'Enter') {
+              this.props.onCharSelect(item.id);
+              this.focusOnItem(i);
+            }
+          }}
         >
           <img src={thumbnail} alt={name} style={imgStyle}/>
           <div className="char__name">{name}</div>
